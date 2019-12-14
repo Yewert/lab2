@@ -38,12 +38,11 @@ void loop()
   while (buttonDownFor >= RANDOM_PULSE_THRESHOLD)
   {
     buttonDownForAccumulated = buttonDownFor;
-    resetDisplay();
-    power = iteration % MAX_POWER + 1;
+    power = min(iteration, MAX_POWER);
     print(power);
     iteration++;
     buttonDownFor = button.downForMilliseconds();
-    delay(5);
+    delay(50);
   }
 
   if (buttonDownForAccumulated < RANDOM_PULSE_THRESHOLD)
@@ -71,28 +70,13 @@ void resetServo()
   for (int i = 0; i < SWING_ANGLE; i++)
   {
     servo.write(SWING_ANGLE - 1 - i);
-    delay(40);
+    delay(30);
   }
 }
 
 void print(int power)
 {
-  int columns = power / 8;
-  for (int i = 0; i < columns; i++)
-  {
-    for (int j = 0; j < 8; j++)
-    {
-      lc.setLed(0, i, j, true);
-    }
-  }
-  int left_to_print = power - (power / 8) * 8;
-  if (left_to_print > 0)
-  {
-    for (int k = 0; k < left_to_print; k++)
-    {
-      lc.setLed(0, columns, k, true);
-    }
-  }
+    lc.setLed(0, power / 8, power % 8, true);
 }
 
 void resetDisplay()
