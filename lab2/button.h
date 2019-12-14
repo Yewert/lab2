@@ -18,33 +18,31 @@ Button::Button(int _pin)
   pin = _pin;
   state = LOW;
   downStart = 0;
+  pinMode(pin, INPUT_PULLUP);
 }
 
 bool Button::isDown()
 {
   int actualState = digitalRead(pin);
-  if (actualState == HIGH)
+  if (actualState == LOW)
   {
     if (downStart == 0)
     {
       downStart = millis(); 
-      state = HIGH;
+      state = LOW;
     }
     
     return true; 
   }
-  
-  if (state == HIGH && actualState == LOW)
-  {
-    state = LOW;
-    downStart = 0;  
-  }
+    
+  state = HIGH;
+  downStart = 0;
   
   return false;
 }
 
 int Button::downForMilliseconds(){
-  return state == HIGH ? (int)(millis() - downStart) : 0;
+  return isDown() ? (int)(millis() - downStart) : 0;
 }
 
 Button::~Button()
